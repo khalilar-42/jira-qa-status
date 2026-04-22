@@ -1,0 +1,46 @@
+name: Jira QA Report
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 9,15 * * 1-5"
+      timezone: "Africa/Casablanca"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jira-qa-report
+  cancel-in-progress: false
+
+jobs:
+  post-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+      JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+      JIRA_FILTER_ID: ${{ secrets.JIRA_FILTER_ID }}
+      JIRA_AUTH_MODE: ${{ secrets.JIRA_AUTH_MODE }}
+      JIRA_CLOUD_ID: ${{ secrets.JIRA_CLOUD_ID }}
+      JIRA_SEARCH_MODE: ${{ secrets.JIRA_SEARCH_MODE }}
+      JIRA_JQL: ${{ secrets.JIRA_JQL }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send Jira QA report
+        run: python jira_qa_to_slack.py
