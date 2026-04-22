@@ -7,11 +7,7 @@ python3 -m pip install -r requirements.txt
 ```
 
 ## 2) Create a `.env` file
-Copy `.env.example` to `.env` and fill in your real values. The script now auto-loads `.env` from the project folder, so you do not need to export everything in your shell.
-
-```bash
-cp .env.example .env
-```
+Fill your `.env` with your real values. The script now auto-loads `.env` from the project folder, so you do not need to export everything in your shell.
 
 Example `.env` values:
 
